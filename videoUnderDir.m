@@ -1,15 +1,17 @@
-function videoMat = videoUnderDir (dirname, imgformat, imgResize, cropBox, writeBox)
+function videoMat = videoUnderDir (dirname, imgformat, imgResize, cropBox, writeBoxImg, boxWriteDir)
 % Get video from images under dir and crop them accordingly.
 %
 % INPUT:
 % 	cropBox - Define the box or boxes to crop. Could be cell array or single vector.
-% 	writeBox - Write box data to 'gt' dir.
+% 	writeBoxImg - Write box data to 'gt' dir.
 
 if ~exist('cropBox', 'var'); cropBox = []; end
-if ~exist('writeBox', 'var'); writeBox = false; end
+if ~exist('writeBoxImg', 'var'); writeBoxImg = false; end
+if ~exist('boxWriteDir', 'var'); boxWriteDir = []; end
 nframe = 0;
 imgfiles = getFilesUnderDir (dirname, imgformat);
 videoMat = [];
+% assert(length(imgfiles) > 0, 'No images available.');
 if ~isempty(cropBox) && length(imgfiles) > length(cropBox)
 	videoMat = [];
 	return
@@ -28,9 +30,12 @@ for i = 1:length(imgfiles)
 	end
 	
 	[I, cropI] = grayResize(fullfile(dirname, imgfiles{i}), imgResize, imgformat, cb);
-	if writeBox && ~isempty(cropI) % write cropped image
+	if writeBoxImg && ~isempty(cropI) % write cropped image
 		% fprintf('writing jpeg. ');
-		jpegdir = fullfile(dirname, 'jpeg');
+		if isempty(boxWriteDir)
+			warning(['boxWriteDir is empty, the cropped images will be placed under ./jpeg']);
+		end
+		jpegdir = fullfile(boxWriteDir, 'jpeg');
 		if ~exist(jpegdir, 'dir')
 			mkdir(jpegdir);
 		end

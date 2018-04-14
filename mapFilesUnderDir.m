@@ -6,8 +6,8 @@ function [mapValues] = mapFilesUnderDir(dirname, fileExts, mapFunc)
 if ~exist('fileExts', 'var') % || isempty(fileExts)
 	fileExts = [];
 end
-if ~exist('dirnames', 'var') % || isempty(dirnames)
-	dirnames = [];
+if ~exist('dirname', 'var') % || isempty(dirnames)
+	dirname = [];
 end
 
 % Get all files/dirs
